@@ -67,11 +67,11 @@
       <div class="grid md:grid-cols-2 gap-4">
         <div>
           <label class="block font-semibold">CPF:</label>
-          <input type="text" id="cpf" name="cpf" class="w-full border rounded p-2" />
+          <input type="text" inputmode="numeric" id="cpf" name="cpf" class="w-full border rounded p-2" />
         </div>
         <div>
           <label class="block font-semibold">Celular:</label>
-          <input type="text" id="celular" name="celular" class="w-full border rounded p-2" />
+          <input type="text" inputmode="numeric" id="celular" name="celular" class="w-full border rounded p-2" />
         </div>
       </div>
 
@@ -124,7 +124,7 @@
       </div>
 
       <div class="grid md:grid-cols-2 gap-4">
-        <input type="text" id="cel_pai" name="cel_pai" placeholder="Cel" class="border rounded p-2" />
+        <input type="text" inputmode="numeric" id="cel_pai" name="cel_pai" placeholder="Cel" class="border rounded p-2" />
         <input type="email" name="email_pai" placeholder="E-mail" class="border rounded p-2" />
       </div>
 
@@ -134,7 +134,7 @@
       </div>
 
       <div class="grid md:grid-cols-2 gap-4">
-        <input type="text" id="cel_mae" name="cel_mae" placeholder="Cel" class="border rounded p-2" />
+        <input type="text" inputmode="numeric" id="cel_mae" name="cel_mae" placeholder="Cel" class="border rounded p-2" />
         <input type="email" name="email_mae" placeholder="E-mail" class="border rounded p-2" />
       </div>
 
@@ -160,7 +160,7 @@
         </div>
         <div>
           <label class="block font-semibold">Horário:</label>
-          <input type="time" name="horario_turma" class="w-full border rounded p-2" />
+          <input type="text" id="horario_turma" name="horario_turma" placeholder="00:00" inputmode="numeric" class="w-full border rounded p-2" />
         </div>
       </div>
 
@@ -224,6 +224,7 @@
     IMask(document.getElementById('celular'), { mask: '(00) 00000-0000' });
     IMask(document.getElementById('cel_pai'), { mask: '(00) 00000-0000' });
     IMask(document.getElementById('cel_mae'), { mask: '(00) 00000-0000' });
+    IMask(document.getElementById('horario_turma'), { mask: '00:00' });
 
     // Função para formatar data no padrão brasileiro
     function formatDateToBR(dateString) {
