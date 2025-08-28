@@ -212,11 +212,21 @@
     IMask(document.getElementById('cel_pai'), { mask: '(00) 00000-0000' });
     IMask(document.getElementById('cel_mae'), { mask: '(00) 00000-0000' });
 
+    // Função para formatar data no padrão brasileiro
+    function formatDateToBR(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString + 'T00:00:00'); // Adiciona horário para evitar problemas de timezone
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    }
+
     document.getElementById("btn-pdf").addEventListener("click", () => {
       const form = document.getElementById("form-primeira-eucaristia");
 
       document.getElementById("p_nome").innerText = form.nome_catequizando.value;
-      document.getElementById("p_data_nasc").innerText = form.data_nascimento.value;
+      document.getElementById("p_data_nasc").innerText = formatDateToBR(form.data_nascimento.value);
       document.getElementById("p_naturalidade").innerText = form.naturalidade.value;
       document.getElementById("p_nacionalidade").innerText = form.nacionalidade.value;
       document.getElementById("p_ano_escolar").innerText = form.ano_escolar.value;
@@ -227,7 +237,7 @@
       document.getElementById("p_celular").innerText = form.celular.value;
       document.getElementById("p_batizado").innerText = form.batizado.value;
       document.getElementById("p_paroquia_batismo").innerText = form.paroquia_batismo.value;
-      document.getElementById("p_data_batismo").innerText = form.data_batismo.value;
+      document.getElementById("p_data_batismo").innerText = formatDateToBR(form.data_batismo.value);
       document.getElementById("p_missas_dominicais").innerText = form.missas_dominicais.value;
       document.getElementById("p_nome_pai").innerText = form.nome_pai.value;
       document.getElementById("p_cel_pai").innerText = form.cel_pai.value;
