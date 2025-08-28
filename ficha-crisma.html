@@ -125,7 +125,7 @@
       </div>
 
       <div class="grid md:grid-cols-2 gap-4">
-        <input type="text" name="cel_pai" placeholder="Cel" class="border rounded p-2" />
+        <input type="text" id="cel_pai" name="cel_pai" placeholder="Cel" class="border rounded p-2" />
         <input type="email" name="email_pai" placeholder="E-mail" class="border rounded p-2" />
       </div>
 
@@ -135,7 +135,7 @@
       </div>
 
       <div class="grid md:grid-cols-2 gap-4">
-        <input type="text" name="cel_mae" placeholder="Cel" class="border rounded p-2" />
+        <input type="text" id="cel_mae" name="cel_mae" placeholder="Cel" class="border rounded p-2" />
         <input type="email" name="email_mae" placeholder="E-mail" class="border rounded p-2" />
       </div>
 
@@ -197,21 +197,23 @@
   </div>
   <!-- Versão para impressão -->
   <div id="print-version">
-    <h1>FICHA DE INSCRIÇÃO DE CRISMA</h1>
+    <h1>ARQUIDIOCESE DE GOIÂNIA – PARÓQUIA SANT'ANA</h1>
+    <h2>FICHA DE INSCRIÇÃO DE CRISMA</h2>
 
     <p><strong>Nome:</strong> <span id="p_nome"></span></p>
     <p><strong>Data Nasc.:</strong> <span id="p_data_nasc"></span> | <strong>Naturalidade:</strong> <span id="p_naturalidade"></span> | <strong>Nacionalidade:</strong> <span id="p_nacionalidade"></span></p>
-    
+    <p><strong>Ano Escolar:</strong> <span id="p_ano_escolar"></span> | <strong>Horário Escolar:</strong> <span id="p_horario_escolar"></span> | <strong>Escola:</strong> <span id="p_escola"></span></p>
+    <p><strong>Endereço:</strong> <span id="p_endereco"></span></p>
     <p><strong>CPF:</strong> <span id="p_cpf"></span> | <strong>Celular:</strong> <span id="p_celular"></span></p>
 
     <p><strong>Batizado?</strong> <span id="p_batizado"></span> | <strong>Paróquia do Batismo:</strong> <span id="p_paroquia_batismo"></span> | <strong>Data do Batismo:</strong> <span id="p_data_batismo"></span></p>
 
     <p><strong>1ª Eucaristia?</strong> <span id="p_primeira_eucaristia"></span> | <strong>Paróquia:</strong> <span id="p_paroquia_eucaristia"></span> | <strong>Data:</strong> <span id="p_data_eucaristia"></span></p>
 
-    <p><strong>Pai:</strong> <span id="p_nome_pai"></span> | <strong>Cel:</strong> <span id="p_cel_pai"></span></p>
-    <p><strong>Mãe:</strong> <span id="p_nome_mae"></span> | <strong>Cel:</strong> <span id="p_cel_mae"></span></p>
+    <p><strong>Pai:</strong> <span id="p_nome_pai"></span> | <strong>Cel:</strong> <span id="p_cel_pai"></span> | <strong>E-mail:</strong> <span id="p_email_pai"></span></p>
+    <p><strong>Mãe:</strong> <span id="p_nome_mae"></span> | <strong>Cel:</strong> <span id="p_cel_mae"></span> | <strong>E-mail:</strong> <span id="p_email_mae"></span></p>
 
-    <p><strong>Turma:</strong> <span id="p_igreja"></span> | <strong>Dia:</strong> <span id="p_dia_semana"></span> | <strong>Horário:</strong> <span id="p_horario_turma"></span></p>
+    <p><strong>Igreja:</strong> <span id="p_igreja"></span> | <strong>Dia:</strong> <span id="p_dia_semana"></span> | <strong>Horário:</strong> <span id="p_horario_turma"></span></p>
 
     <p><strong>Catequista(s):</strong> <span id="p_catequista"></span></p>
     <p><strong>Padrinho:</strong> <span id="p_padrinho"></span> | <strong>Madrinha:</strong> <span id="p_madrinha"></span></p>
@@ -221,6 +223,8 @@
   <script>
     IMask(document.getElementById('cpf'), { mask: '000.000.000-00' });
     IMask(document.getElementById('celular'), { mask: '(00) 00000-0000' });
+    IMask(document.getElementById('cel_pai'), { mask: '(00) 00000-0000' });
+    IMask(document.getElementById('cel_mae'), { mask: '(00) 00000-0000' });
 
     document.getElementById("btn-pdf").addEventListener("click", () => {
       const form = document.getElementById("form-crisma");
@@ -229,6 +233,10 @@
       document.getElementById("p_data_nasc").innerText = form.data_nascimento.value;
       document.getElementById("p_naturalidade").innerText = form.naturalidade.value;
       document.getElementById("p_nacionalidade").innerText = form.nacionalidade.value;
+      document.getElementById("p_ano_escolar").innerText = form.ano_escolar.value;
+      document.getElementById("p_horario_escolar").innerText = form.horario.value;
+      document.getElementById("p_escola").innerText = form.escola.value;
+      document.getElementById("p_endereco").innerText = form.endereco.value;
       document.getElementById("p_cpf").innerText = form.cpf.value;
       document.getElementById("p_celular").innerText = form.celular.value;
       document.getElementById("p_batizado").innerText = form.batizado.value;
@@ -239,8 +247,10 @@
       document.getElementById("p_data_eucaristia").innerText = form.data_eucaristia.value;
       document.getElementById("p_nome_pai").innerText = form.nome_pai.value;
       document.getElementById("p_cel_pai").innerText = form.cel_pai.value;
+      document.getElementById("p_email_pai").innerText = form.email_pai.value;
       document.getElementById("p_nome_mae").innerText = form.nome_mae.value;
       document.getElementById("p_cel_mae").innerText = form.cel_mae.value;
+      document.getElementById("p_email_mae").innerText = form.email_mae.value;
       document.getElementById("p_igreja").innerText = form.igreja.value;
       document.getElementById("p_dia_semana").innerText = form.dia_semana.value;
       document.getElementById("p_horario_turma").innerText = form.horario_turma.value;
