@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fichas de Catequese - Paróquia Sant'Ana</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div class="container mx-auto px-6 py-12">
+    <div class="max-w-4xl mx-auto bg-white shadow-2xl rounded-xl p-8">
+      
+      <!-- Cabeçalho -->
+      <div class="text-center mb-12">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">ARQUIDIOCESE DE GOIÂNIA</h1>
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">PARÓQUIA SANT'ANA</h2>
+        <h3 class="text-xl text-blue-600 font-medium">FICHAS DE INSCRIÇÃO PARA CATEQUESE</h3>
+        <div class="w-24 h-1 bg-blue-600 mx-auto mt-4"></div>
+      </div>
+
+      <!-- Descrição -->
+      <div class="text-center mb-12">
+        <p class="text-gray-600 text-lg leading-relaxed">
+          Escolha abaixo a ficha de inscrição correspondente ao sacramento desejado. 
+          Após preencher todos os dados, você poderá gerar um PDF para enviar à secretaria da paróquia.
+        </p>
+      </div>
+
+      <!-- Botões das Fichas -->
+      <div class="grid md:grid-cols-2 gap-8">
+        
+        <!-- Ficha de Crisma -->
+        <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-8 text-center hover:shadow-lg transition-all duration-300 border border-red-200">
+          <div class="mb-6">
+            <div class="w-16 h-16 bg-red-500 rounded-full mx-auto flex items-center justify-center mb-4">
+              <img src="crisma-icon.svg" alt="Ícone da Crisma" class="w-8 h-8">
+            </div>
+            <h3 class="text-2xl font-bold text-red-700 mb-3">CRISMA</h3>
+            <p class="text-red-600 text-sm mb-6">
+              Ficha de inscrição para o sacramento da Confirmação (Crisma).
+              Para jovens que já fizeram a Primeira Eucaristia.
+            </p>
+          </div>
+          <a href="ficha-crisma.html" 
+             class="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-4 px-8 rounded-lg transition-colors duration-300 w-full">
+            Preencher Ficha de Crisma
+          </a>
+        </div>
+
+        <!-- Ficha de Primeira Eucaristia -->
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-8 text-center hover:shadow-lg transition-all duration-300 border border-blue-200">
+          <div class="mb-6">
+            <div class="w-16 h-16 bg-blue-500 rounded-full mx-auto flex items-center justify-center mb-4">
+              <img src="eucaristia-icon.svg" alt="Ícone da Primeira Eucaristia" class="w-8 h-8">
+            </div>
+            <h3 class="text-2xl font-bold text-blue-700 mb-3">PRIMEIRA EUCARISTIA</h3>
+            <p class="text-blue-600 text-sm mb-6">
+              Ficha de inscrição para o sacramento da Primeira Comunhão.
+              Para crianças que já foram batizadas.
+            </p>
+          </div>
+          <a href="ficha-primeira-eucaristia.html" 
+             class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg transition-colors duration-300 w-full">
+            Preencher Ficha de Primeira Eucaristia
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Rodapé -->
+      <div class="mt-12 text-center text-gray-500 text-sm">
+        <p class="mb-2">
+          <strong>Importante:</strong> Após preencher a ficha, gere o PDF e envie para a secretaria da paróquia.
+        </p>
+        <p class="mb-4">
+          Para dúvidas, entre em contato com a secretaria da Paróquia Sant'Ana.
+        </p>
+        
+        <!-- Disclaimer -->
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-6">
+          <p class="text-yellow-800 text-xs">
+            <strong>⚠️ DISCLAIMER:</strong> Este site foi desenvolvido de forma independente por um membro da comunidade paroquial. 
+            Não é um site oficial da Arquidiocese de Goiânia nem da Paróquia Sant'Ana. 
+            É uma ferramenta pessoal criada para facilitar o preenchimento das fichas de inscrição.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>
