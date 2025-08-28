@@ -1,18 +1,10 @@
 # Sistema de Fichas de Catequese - Paróquia Sant'Ana
 
+**⚠️ DISCLAIMER:** Este site foi desenvolvido de forma independente por um membro da comunidade paroquial. 
+Não é um site oficial da Arquidiocese de Goiânia nem da Paróquia Sant'Ana. 
+É uma ferramenta pessoal criada para facilitar o preenchimento das fichas de inscrição.
+
 Este sistema permite que os pais preencham digitalmente as fichas de inscrição para catequese e gerem PDFs para enviar à secretaria da paróquia.
-
-## Estrutura do Projeto
-
-```
-fichas-catequese/
-├── index.html                    # Página inicial com botões para escolher a ficha
-├── ficha-crisma.html            # Formulário para inscrição na Crisma  
-├── ficha-primeira-eucaristia.html # Formulário para inscrição na Primeira Eucaristia
-├── index.css                    # Estilos CSS compartilhados
-├── index.js                     # JavaScript da página inicial
-└── README.md                    # Este arquivo
-```
 
 ## Como Usar
 
@@ -33,22 +25,6 @@ fichas-catequese/
 - **JavaScript**: Interatividade e máscaras de input
 - **Tailwind CSS**: Framework CSS via CDN
 - **IMask**: Biblioteca para máscaras de input
-
-## Estrutura dos Dados
-
-### Campos Comuns:
-- Nome do catequizando
-- Data de nascimento, naturalidade, nacionalidade
-- Ano escolar, horário escolar, escola
-- Endereço completo
-- CPF e celular
-- Informações do batismo
-- Dados dos pais (nome, celular, email)
-- Informações da turma de catequese
-
-### Campos Específicos da Crisma:
-- Informações sobre Primeira Eucaristia
-- Padrinho e Madrinha
 
 ## Instalação
 
