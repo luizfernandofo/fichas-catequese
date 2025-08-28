@@ -248,7 +248,10 @@
       document.getElementById("p_padrinho").innerText = form.padrinho.value;
       document.getElementById("p_madrinha").innerText = form.madrinha.value;
 
-      window.print();
+      // Configurações para remover headers e footers
+      setTimeout(() => {
+        window.print();
+      }, 100);
     });
   </script>
 

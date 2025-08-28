@@ -2,6 +2,29 @@
 
 /* Estilos de impressão para as fichas */
 @media print {
+  /* Remove completamente headers e footers do navegador na impressão */
+  html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Force remove browser headers and footers */
+  @page {
+    /* Remove headers e footers automáticos */
+    @top-left { content: ""; }
+    @top-center { content: ""; }
+    @top-right { content: ""; }
+    @bottom-left { content: ""; }
+    @bottom-center { content: ""; }
+    @bottom-right { content: ""; }
+  }
+  
+  /* Hide browser generated content */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
   body {
     background: white !important;
     margin: 0;
@@ -38,9 +61,19 @@
     color: black;
   }
 
-  /* Configurações de página */
-  @page {
-    margin: 1cm;
+  /* Remove headers e footers do navegador */
+  @page :first {
+    margin-top: 15mm;
+  }
+  
+  @page :left {
+    margin-left: 20mm;
+    margin-right: 15mm;
+  }
+  
+  @page :right {
+    margin-left: 15mm;
+    margin-right: 20mm;
   }
 }
 
