@@ -6,6 +6,7 @@
   <title>Ficha de Inscrição de Crisma</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.3/imask.min.js"></script>
+  <script src="utils.js"></script>
   <link rel="stylesheet" href="index.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
@@ -236,8 +237,41 @@
       return `${day}/${month}/${year}`;
     }
 
+    // Validação do CPF em tempo real
+    document.getElementById('cpf').addEventListener('blur', function() {
+      const cpfValue = this.value;
+      if (cpfValue && !isValidCPF(cpfValue)) {
+        this.classList.add('border-red-500');
+        this.classList.remove('border-gray-300');
+        // Adiciona mensagem de erro se não existir
+        let errorMsg = this.parentNode.querySelector('.error-msg');
+        if (!errorMsg) {
+          errorMsg = document.createElement('span');
+          errorMsg.className = 'error-msg text-red-500 text-sm';
+          errorMsg.textContent = 'CPF inválido';
+          this.parentNode.appendChild(errorMsg);
+        }
+      } else {
+        this.classList.remove('border-red-500');
+        this.classList.add('border-gray-300');
+        // Remove mensagem de erro se existir
+        const errorMsg = this.parentNode.querySelector('.error-msg');
+        if (errorMsg) {
+          errorMsg.remove();
+        }
+      }
+    });
+
     document.getElementById("btn-pdf").addEventListener("click", () => {
       const form = document.getElementById("form-crisma");
+      
+      // Validar CPF antes de gerar PDF
+      const cpfValue = form.cpf.value;
+      if (cpfValue && !isValidCPF(cpfValue)) {
+        alert('Por favor, insira um CPF válido antes de gerar o PDF.');
+        form.cpf.focus();
+        return;
+      }
 
       document.getElementById("p_nome").innerText = form.nome_catequizando.value;
       document.getElementById("p_data_nasc").innerText = formatDateToBR(form.data_nascimento.value);
