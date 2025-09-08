@@ -193,6 +193,13 @@ class GerenciadorDados {
         const corBadge = catequizando.tipo === 'crisma' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800';
         const corBotao = catequizando.tipo === 'crisma' ? 'bg-blue-500 hover:bg-blue-600' : 'bg-green-500 hover:bg-green-600';
 
+        // Função para criar link do WhatsApp
+        const criarLinkWhatsApp = (numero) => {
+            if (!numero) return '';
+            const numeroLimpo = numero.replace(/[^\d]/g, '');
+            return `<a href="http://wa.me/55${numeroLimpo}" target="_blank" class="text-green-600 hover:text-green-800">${numero}</a>`;
+        };
+
         return `
             <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
                 <div class="flex items-center justify-between mb-3">
@@ -209,7 +216,9 @@ class GerenciadorDados {
                 
                 <div class="text-sm text-gray-600 space-y-1 mb-4 flex-grow">
                     ${catequizando.data_nascimento ? `<p>📅 ${this.formatarData(catequizando.data_nascimento)}</p>` : ''}
-                    ${catequizando.celular ? `<p>📱 ${catequizando.celular}</p>` : ''}
+                    ${catequizando.celular ? `<p>📱 ${criarLinkWhatsApp(catequizando.celular)}</p>` : ''}
+                    ${catequizando.cel_pai ? `<p>👨🏻 ${criarLinkWhatsApp(catequizando.cel_pai)} ${catequizando.nome_pai ? `(${catequizando.nome_pai.split(' ')[0]})` : ''}</p>` : ''}
+                    ${catequizando.cel_mae ? `<p>👩 ${criarLinkWhatsApp(catequizando.cel_mae)} ${catequizando.nome_mae ? `(${catequizando.nome_mae.split(' ')[0]})` : ''}</p>` : ''}
                     ${catequizando.endereco ? `<p>📍 ${catequizando.endereco.substring(0, 30)}${catequizando.endereco.length > 30 ? '...' : ''}</p>` : ''}
                 </div>
                 
