@@ -255,6 +255,7 @@ class GerenciadorDados {
         this.catequizandoEditando = catequizando;
         document.getElementById('modal-edicao-titulo').textContent = 'Editar Catequizando';
         this.preencherFormularioEdicao(catequizando);
+        this.setupMasksAndValidations();
         this.toggleCamposCrisma();
         this.mostrarModalEdicao();
     }
@@ -297,6 +298,7 @@ class GerenciadorDados {
         this.catequizandoEditando = novoCatequizando;
         document.getElementById('modal-edicao-titulo').textContent = 'Adicionar Catequizando';
         this.preencherFormularioEdicao(novoCatequizando);
+        this.setupMasksAndValidations();
         this.toggleCamposCrisma();
         this.mostrarModalEdicao();
     }
@@ -486,6 +488,18 @@ class GerenciadorDados {
     }
 
     fecharModalEdicao() {
+        // Limpar mensagens de erro
+        const form = document.getElementById('form-edicao');
+        const errorMessages = form.querySelectorAll('.error-msg');
+        errorMessages.forEach(msg => msg.remove());
+        
+        // Remover classes de erro dos campos
+        const inputs = form.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.classList.remove('border-red-500');
+            input.classList.add('border-gray-300');
+        });
+        
         document.getElementById('modal-edicao').classList.add('hidden');
         document.getElementById('modal-edicao').classList.remove('flex');
         this.catequizandoEditando = null;
@@ -515,6 +529,9 @@ class GerenciadorDados {
     }
 
     setupMasksAndValidations() {
+        // Limpar máscaras existentes
+        this.clearMasks();
+        
         // Configurar máscaras
         const cpfInput = document.querySelector('#form-edicao [name="cpf"]');
         const celularInput = document.querySelector('#form-edicao [name="celular"]');
@@ -524,24 +541,32 @@ class GerenciadorDados {
 
         // Aplicar máscaras
         if (cpfInput) {
-            IMask(cpfInput, { mask: '000.000.000-00' });
+            this.cpfMask = IMask(cpfInput, { mask: '000.000.000-00' });
         }
         if (celularInput) {
-            IMask(celularInput, { mask: '(00) 00000-0000' });
+            this.celularMask = IMask(celularInput, { mask: '(00) 00000-0000' });
         }
         if (celPaiInput) {
-            IMask(celPaiInput, { mask: '(00) 00000-0000' });
+            this.celPaiMask = IMask(celPaiInput, { mask: '(00) 00000-0000' });
         }
         if (celMaeInput) {
-            IMask(celMaeInput, { mask: '(00) 00000-0000' });
+            this.celMaeMask = IMask(celMaeInput, { mask: '(00) 00000-0000' });
         }
         if (horarioTurmaInput) {
-            IMask(horarioTurmaInput, { mask: '00:00' });
+            this.horarioTurmaMask = IMask(horarioTurmaInput, { mask: '00:00' });
         }
 
         // Configurar validações
         this.setupCPFValidation();
         this.setupPhoneValidations();
+    }
+
+    clearMasks() {
+        if (this.cpfMask) this.cpfMask.destroy();
+        if (this.celularMask) this.celularMask.destroy();
+        if (this.celPaiMask) this.celPaiMask.destroy();
+        if (this.celMaeMask) this.celMaeMask.destroy();
+        if (this.horarioTurmaMask) this.horarioTurmaMask.destroy();
     }
 
     setupCPFValidation() {
