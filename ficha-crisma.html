@@ -307,8 +307,58 @@
         window.print();
       }, 100);
     });
+
+    // Função para preenchimento automático dos dados
+    function preencherDadosAutomaticamente() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('preenchimento') === 'auto') {
+        try {
+          const dadosSalvos = localStorage.getItem('catequizando_selecionado');
+          if (dadosSalvos) {
+            const dados = JSON.parse(dadosSalvos);
+            const form = document.getElementById('form-crisma');
+            
+            // Preencher todos os campos do formulário
+            Object.keys(dados).forEach(campo => {
+              const input = form.querySelector(`[name="${campo}"]`);
+              if (input && dados[campo]) {
+                input.value = dados[campo];
+              }
+            });
+
+            // Mostrar notificação de sucesso
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            notification.innerHTML = `
+              <div class="flex items-center space-x-2">
+                <span>✅</span>
+                <span>Dados preenchidos automaticamente!</span>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">✕</button>
+              </div>
+            `;
+            document.body.appendChild(notification);
+
+            // Remover notificação após 5 segundos
+            setTimeout(() => {
+              if (notification.parentElement) {
+                notification.remove();
+              }
+            }, 5000);
+
+            // Limpar dados do localStorage após uso
+            localStorage.removeItem('catequizando_selecionado');
+          }
+        } catch (error) {
+          console.error('Erro ao preencher dados automaticamente:', error);
+        }
+      }
+    }
+
+    // Executar preenchimento automático quando a página carregar
+    document.addEventListener('DOMContentLoaded', preencherDadosAutomaticamente);
   </script>
 
+  <script src="aviso-privacidade.js"></script>
 
 </body>
 </html>

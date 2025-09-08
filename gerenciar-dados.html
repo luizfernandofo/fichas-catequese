@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerenciar Dados dos Catequizandos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="index.css">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    /* Estilos personalizados para o modal */
+    #modal-edicao {
+      backdrop-filter: blur(4px);
+    }
+    
+    .modal-content {
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    /* Scrollbar personalizada */
+    .modal-content::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .modal-content::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    
+    .modal-content::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 3px;
+    }
+    
+    .modal-content::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div class="container mx-auto p-6 max-w-6xl">
+    <div class="bg-white shadow-lg rounded-xl p-8">
+      <h1 class="text-center font-bold text-2xl text-gray-800 mb-2">Gerenciar Dados dos Catequizandos</h1>
+      <p class="text-center text-gray-600 mb-8">Upload e gerenciamento de dados para preenchimento automático das fichas</p>
+
+      <!-- Botão para mostrar upload -->
+      <div id="upload-toggle" class="text-center mb-8">
+        <button id="btn-mostrar-upload" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors shadow-lg">
+          📁 Fazer Upload de Dados
+        </button>
+      </div>
+
+      <!-- Seção de Upload (inicialmente oculta) -->
+      <div id="upload-section" class="hidden bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold text-blue-800">📁 Upload de Arquivo JSON</h2>
+          <button id="btn-fechar-upload" class="text-blue-600 hover:text-blue-800 text-xl" title="Fechar">✕</button>
+        </div>
+        <div class="flex flex-col space-y-4">
+          <div class="flex items-center justify-center w-full">
+            <label for="json-upload" class="flex flex-col items-center justify-center w-full h-32 border-2 border-blue-300 border-dashed rounded-lg cursor-pointer bg-blue-50 hover:bg-blue-100">
+              <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                <svg class="w-8 h-8 mb-4 text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                </svg>
+                <p class="mb-2 text-sm text-blue-500"><span class="font-semibold">Clique para fazer upload</span> ou arraste o arquivo</p>
+                <p class="text-xs text-blue-500">JSON apenas</p>
+              </div>
+              <input id="json-upload" type="file" accept=".json" class="hidden" />
+            </label>
+          </div>
+          <div class="flex space-x-4">
+            <button id="btn-limpar-dados" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors">
+              🗑️ Limpar Dados Salvos
+            </button>
+            <button id="btn-baixar-template" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors">
+              📄 Baixar Template JSON
+            </button>
+            <button id="btn-baixar-dados" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+              💾 Baixar Dados JSON
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status de Upload -->
+      <div id="upload-status" class="hidden mb-6">
+        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+          <p class="text-green-800">
+            <span class="font-semibold">✅ Sucesso!</span> 
+            <span id="upload-count"></span> catequizandos carregados com sucesso.
+          </p>
+        </div>
+      </div>
+
+      <!-- Lista de Catequizandos -->
+      <div id="catequizandos-section" class="hidden">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">👥 Catequizandos Carregados</h2>
+        
+        <!-- Filtros e Busca -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+          <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+            <div class="flex-1">
+              <input type="text" id="search-input" placeholder="🔍 Buscar por nome..." class="w-full border rounded-lg p-2">
+            </div>
+            <div>
+              <select id="tipo-filter" class="border rounded-lg p-2">
+                <option value="todos">Todos os tipos</option>
+                <option value="crisma">Crisma</option>
+                <option value="eucaristia">Primeira Eucaristia</option>
+              </select>
+            </div>
+            <div>
+              <button id="btn-adicionar-catequizando" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                ➕ Adicionar Catequizando
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid de Catequizandos -->
+        <div id="catequizandos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          <!-- Cards dos catequizandos serão inseridos aqui via JavaScript -->
+        </div>
+      </div>
+
+      <!-- Botões de Navegação -->
+      <div class="text-center mt-8 space-x-4">
+        <a href="index.html" class="inline-block bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition-colors">
+          ← Voltar ao Início
+        </a>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-8">
+        <p class="text-yellow-800 text-xs text-center">
+          <strong>⚠️ DISCLAIMER:</strong> Este site foi desenvolvido de forma independente por um membro da comunidade paroquial. 
+          Não é um site oficial da Arquidiocese de Goiânia nem da Paróquia Sant'Ana. 
+          É uma ferramenta pessoal criada para facilitar o preenchimento das fichas de inscrição.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Confirmação -->
+  <div id="modal-confirmacao" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md mx-4">
+      <h3 class="text-lg font-semibold mb-4">Confirmar Ação</h3>
+      <p id="modal-texto" class="text-gray-700 mb-6"></p>
+      <div class="flex space-x-4 justify-end">
+        <button id="modal-cancelar" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">Cancelar</button>
+        <button id="modal-confirmar" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Edição -->
+  <div id="modal-edicao" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-4xl mx-4 modal-content">
+      <div class="flex justify-between items-center mb-6">
+        <h3 id="modal-edicao-titulo" class="text-xl font-semibold">Editar Catequizando</h3>
+        <button id="modal-edicao-fechar" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+      </div>
+      
+      <form id="form-edicao" class="space-y-4">
+        <!-- Campos básicos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nome do Catequizando *</label>
+            <input type="text" name="nome_catequizando" required class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+            <select name="tipo" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="crisma">Crisma</option>
+              <option value="eucaristia">Primeira Eucaristia</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Data de Nascimento</label>
+            <input type="date" name="data_nascimento" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Naturalidade</label>
+            <input type="text" name="naturalidade" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nacionalidade</label>
+            <input type="text" name="nacionalidade" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+
+        <!-- Informações escolares -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Ano Escolar</label>
+            <input type="text" name="ano_escolar" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Horário Escolar</label>
+            <select name="horario" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Selecione</option>
+              <option value="Matutino">Matutino</option>
+              <option value="Vespertino">Vespertino</option>
+              <option value="Integral">Integral</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Escola</label>
+            <input type="text" name="escola" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+
+        <!-- Contato -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Endereço</label>
+            <input type="text" name="endereco" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Celular</label>
+            <input type="text" name="celular" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">CPF</label>
+          <input type="text" name="cpf" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Informações dos pais -->
+        <div class="border-t pt-4">
+          <h4 class="text-lg font-medium mb-3">Informações dos Pais</h4>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Nome do Pai</label>
+              <input type="text" name="nome_pai" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Celular do Pai</label>
+                <input type="text" name="cel_pai" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email do Pai</label>
+                <input type="email" name="email_pai" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Nome da Mãe</label>
+              <input type="text" name="nome_mae" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Celular da Mãe</label>
+                <input type="text" name="cel_mae" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email da Mãe</label>
+                <input type="email" name="email_mae" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informações sacramentais -->
+        <div class="border-t pt-4">
+          <h4 class="text-lg font-medium mb-3">Informações Sacramentais</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">É batizado?</label>
+              <select name="batizado" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Paróquia do Batismo</label>
+              <input type="text" name="paroquia_batismo" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+          <div class="mt-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Data do Batismo</label>
+            <input type="date" name="data_batismo" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+
+        <!-- Campos específicos para Crisma -->
+        <div id="campos-crisma" class="border-t pt-4">
+          <h4 class="text-lg font-medium mb-3">Informações da Crisma</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Já fez 1ª Eucaristia?</label>
+              <select name="primeira_eucaristia" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Paróquia da 1ª Eucaristia</label>
+              <input type="text" name="paroquia_eucaristia" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+          <div class="mt-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Data da 1ª Eucaristia</label>
+            <input type="date" name="data_eucaristia" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Padrinho</label>
+              <input type="text" name="padrinho" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Madrinha</label>
+              <input type="text" name="madrinha" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+        </div>
+
+        <!-- Informações da catequese -->
+        <div class="border-t pt-4">
+          <h4 class="text-lg font-medium mb-3">Informações da Catequese</h4>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Igreja onde acontecem os encontros</label>
+            <input type="text" name="igreja" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Dia da Semana</label>
+              <select name="dia_semana" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Selecione</option>
+                <option value="Domingo">Domingo</option>
+                <option value="Segunda-feira">Segunda-feira</option>
+                <option value="Terça-feira">Terça-feira</option>
+                <option value="Quarta-feira">Quarta-feira</option>
+                <option value="Quinta-feira">Quinta-feira</option>
+                <option value="Sexta-feira">Sexta-feira</option>
+                <option value="Sábado">Sábado</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Horário da Turma</label>
+              <input type="text" name="horario_turma" placeholder="00:00" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Catequista(s)</label>
+              <input type="text" name="catequista" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-4 pt-6 border-t">
+          <button type="button" id="modal-edicao-cancelar" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">
+            Cancelar
+          </button>
+          <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg">
+            Salvar Alterações
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="gerenciar-dados.js"></script>
+  <script src="aviso-privacidade.js"></script>
+</body>
+</html>
