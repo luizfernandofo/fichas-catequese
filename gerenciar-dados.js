@@ -47,6 +47,9 @@ class GerenciadorDados {
         // Controle de campos específicos por tipo
         const tipoSelect = document.querySelector('#form-edicao [name="tipo"]');
         tipoSelect.addEventListener('change', () => this.toggleCamposCrisma());
+
+        // Configurar máscaras e validações
+        this.setupMasksAndValidations();
     }
 
     handleFileUpload(event) {
@@ -511,6 +514,142 @@ class GerenciadorDados {
         }
     }
 
+    setupMasksAndValidations() {
+        // Configurar máscaras
+        const cpfInput = document.querySelector('#form-edicao [name="cpf"]');
+        const celularInput = document.querySelector('#form-edicao [name="celular"]');
+        const celPaiInput = document.querySelector('#form-edicao [name="cel_pai"]');
+        const celMaeInput = document.querySelector('#form-edicao [name="cel_mae"]');
+        const horarioTurmaInput = document.querySelector('#form-edicao [name="horario_turma"]');
+
+        // Aplicar máscaras
+        if (cpfInput) {
+            IMask(cpfInput, { mask: '000.000.000-00' });
+        }
+        if (celularInput) {
+            IMask(celularInput, { mask: '(00) 00000-0000' });
+        }
+        if (celPaiInput) {
+            IMask(celPaiInput, { mask: '(00) 00000-0000' });
+        }
+        if (celMaeInput) {
+            IMask(celMaeInput, { mask: '(00) 00000-0000' });
+        }
+        if (horarioTurmaInput) {
+            IMask(horarioTurmaInput, { mask: '00:00' });
+        }
+
+        // Configurar validações
+        this.setupCPFValidation();
+        this.setupPhoneValidations();
+    }
+
+    setupCPFValidation() {
+        const cpfInput = document.querySelector('#form-edicao [name="cpf"]');
+        if (!cpfInput) return;
+
+        cpfInput.addEventListener('blur', function() {
+            const cpfValue = this.value;
+            if (cpfValue && !isValidCPF(cpfValue)) {
+                this.classList.add('border-red-500');
+                this.classList.remove('border-gray-300');
+                // Adiciona mensagem de erro se não existir
+                let errorMsg = this.parentNode.querySelector('.error-msg');
+                if (!errorMsg) {
+                    errorMsg = document.createElement('span');
+                    errorMsg.className = 'error-msg text-red-500 text-sm';
+                    errorMsg.textContent = 'CPF inválido';
+                    this.parentNode.appendChild(errorMsg);
+                }
+            } else {
+                this.classList.remove('border-red-500');
+                this.classList.add('border-gray-300');
+                // Remove mensagem de erro se existir
+                const errorMsg = this.parentNode.querySelector('.error-msg');
+                if (errorMsg) {
+                    errorMsg.remove();
+                }
+            }
+        });
+    }
+
+    setupPhoneValidations() {
+        const phoneInputs = [
+            document.querySelector('#form-edicao [name="celular"]'),
+            document.querySelector('#form-edicao [name="cel_pai"]'),
+            document.querySelector('#form-edicao [name="cel_mae"]')
+        ];
+
+        phoneInputs.forEach(input => {
+            if (!input) return;
+            
+            input.addEventListener('blur', function() {
+                const phoneValue = this.value;
+                if (phoneValue && !this.isValidPhone(phoneValue)) {
+                    this.classList.add('border-red-500');
+                    this.classList.remove('border-gray-300');
+                    // Adiciona mensagem de erro se não existir
+                    let errorMsg = this.parentNode.querySelector('.error-msg');
+                    if (!errorMsg) {
+                        errorMsg = document.createElement('span');
+                        errorMsg.className = 'error-msg text-red-500 text-sm';
+                        errorMsg.textContent = 'Telefone inválido';
+                        this.parentNode.appendChild(errorMsg);
+                    }
+                } else {
+                    this.classList.remove('border-red-500');
+                    this.classList.add('border-gray-300');
+                    // Remove mensagem de erro se existir
+                    const errorMsg = this.parentNode.querySelector('.error-msg');
+                    if (errorMsg) {
+                        errorMsg.remove();
+                    }
+                }
+            });
+            
+            // Adicionar método de validação ao input
+            input.isValidPhone = function(phone) {
+                if (typeof phone !== 'string') return false;
+                // Remove todos os caracteres não numéricos
+                const cleanPhone = phone.replace(/[^\d]+/g, '');
+                
+                // Verifica se tem 10 ou 11 dígitos (com DDD)
+                if (cleanPhone.length < 10 || cleanPhone.length > 11) return false;
+                
+                // Se tem 11 dígitos, o 3º dígito deve ser 9 (celular)
+                if (cleanPhone.length === 11 && cleanPhone[2] !== '9') return false;
+                
+                // Se tem 10 dígitos, o 3º dígito não pode ser 9 (fixo)
+                if (cleanPhone.length === 10 && cleanPhone[2] === '9') return false;
+                
+                // Verifica se não são todos os dígitos iguais
+                if (!!cleanPhone.match(/(\d)\1{9,10}/)) return false;
+                
+                return true;
+            };
+        });
+    }
+
+    isValidPhone(phone) {
+        if (typeof phone !== 'string') return false;
+        // Remove todos os caracteres não numéricos
+        const cleanPhone = phone.replace(/[^\d]+/g, '');
+        
+        // Verifica se tem 10 ou 11 dígitos (com DDD)
+        if (cleanPhone.length < 10 || cleanPhone.length > 11) return false;
+        
+        // Se tem 11 dígitos, o 3º dígito deve ser 9 (celular)
+        if (cleanPhone.length === 11 && cleanPhone[2] !== '9') return false;
+        
+        // Se tem 10 dígitos, o 3º dígito não pode ser 9 (fixo)
+        if (cleanPhone.length === 10 && cleanPhone[2] === '9') return false;
+        
+        // Verifica se não são todos os dígitos iguais
+        if (!!cleanPhone.match(/(\d)\1{9,10}/)) return false;
+        
+        return true;
+    }
+
     salvarEdicao(event) {
         event.preventDefault();
         
@@ -523,6 +662,28 @@ class GerenciadorDados {
         if (!formData.get('nome_catequizando').trim()) {
             alert('O nome do catequizando é obrigatório.');
             return;
+        }
+
+        // Validar CPF se preenchido
+        const cpfValue = formData.get('cpf').trim();
+        if (cpfValue && !isValidCPF(cpfValue)) {
+            alert('Por favor, insira um CPF válido.');
+            return;
+        }
+
+        // Validar telefones se preenchidos
+        const phoneFields = ['celular', 'cel_pai', 'cel_mae'];
+        for (let fieldName of phoneFields) {
+            const phoneValue = formData.get(fieldName).trim();
+            if (phoneValue && !this.isValidPhone(phoneValue)) {
+                const fieldLabels = {
+                    'celular': 'Celular do catequizando',
+                    'cel_pai': 'Celular do pai',
+                    'cel_mae': 'Celular da mãe'
+                };
+                alert(`Por favor, insira um número válido para ${fieldLabels[fieldName]}.`);
+                return;
+            }
         }
 
         // Atualizar dados do catequizando
